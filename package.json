@@ -1,0 +1,23 @@
+{
+  "name": "datasheq-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sitio web DATASHEQ — gestión HSEQ digital (Express + SendGrid)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "preview:emails": "node scripts/preview-emails.js"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
+    "compression": "^1.8.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "qrcode": "^1.5.4"
+  }
+}
