@@ -289,7 +289,7 @@ function renderPage({ lang, baseUrl, version }) {
           </div>
         </div>
         <div class="hero-media">
-          <img src="/assets/hero.jpg" alt="${e(t('hero_img_alt'))}" width="888" height="876" fetchpriority="high">
+          <img src="/assets/hero.jpg?v=${v}" alt="${e(t('hero_img_alt'))}" width="902" height="876" fetchpriority="high">
         </div>
       </div>
     </section>
@@ -374,7 +374,7 @@ function renderPage({ lang, baseUrl, version }) {
           </div>
         </div>
         <div class="app-media">
-          <img src="/assets/phone.jpg" alt="${e(t('app_img_alt'))}" width="634" height="770" loading="lazy">
+          <img src="/assets/phone.jpg?v=${v}" alt="${e(t('app_img_alt'))}" width="634" height="770" loading="lazy">
         </div>
       </div>
     </section>
