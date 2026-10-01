@@ -84,31 +84,31 @@ app.get('/healthz', (req, res) => {
   res.json({ status: 'ok', version: pkg.version, mail: { configured: mail.configured, sandbox: mail.sandbox } });
 });
 
-/** QR target: sends phones to the right store (falls back to the app section). */
-app.get('/app', (req, res) => {
-  const ua = req.get('user-agent') || '';
+/** Store redirects (used by the store icons and the QR codes). Fall back to the app section. */
+function storeRedirect(req, res, which) {
   const { googlePlayUrl, appStoreUrl } = content.settings.app;
-  if (/android/i.test(ua) && googlePlayUrl) return res.redirect(302, googlePlayUrl);
-  if (/iphone|ipad|ipod/i.test(ua) && appStoreUrl) return res.redirect(302, appStoreUrl);
-  if (googlePlayUrl && !appStoreUrl) return res.redirect(302, googlePlayUrl);
-  if (appStoreUrl && !googlePlayUrl) return res.redirect(302, appStoreUrl);
-  return res.redirect(302, '/#app');
-});
+  const ua = req.get('user-agent') || '';
+  let target = '';
+  if (which === 'ios') target = appStoreUrl;
+  else if (which === 'android') target = googlePlayUrl;
+  else if (/android/i.test(ua)) target = googlePlayUrl;
+  else if (/iphone|ipad|ipod/i.test(ua)) target = appStoreUrl;
+  else target = googlePlayUrl || appStoreUrl;
+  return res.redirect(302, target || '/#app');
+}
+app.get('/app', (req, res) => storeRedirect(req, res, 'auto'));
+app.get('/app/ios', (req, res) => storeRedirect(req, res, 'ios'));
+app.get('/app/android', (req, res) => storeRedirect(req, res, 'android'));
 
 const qrCache = new Map();
-app.get('/qr.svg', async (req, res, next) => {
+async function sendQr(req, res, next, path) {
   try {
-    const target = `${baseUrlFrom(req)}/app`;
+    const target = `${baseUrlFrom(req)}${path}`;
     if (!qrCache.has(target)) {
-      if (qrCache.size > 20) qrCache.clear();
+      if (qrCache.size > 30) qrCache.clear();
       qrCache.set(
         target,
-        await QRCode.toString(target, {
-          type: 'svg',
-          margin: 0,
-          errorCorrectionLevel: 'M',
-          color: { dark: '#141A33', light: '#FFFFFF' },
-        })
+        await QRCode.toString(target, { type: 'svg', margin: 0, errorCorrectionLevel: 'M', color: { dark: '#000000', light: '#FFFFFF' } })
       );
     }
     res.set('Cache-Control', 'public, max-age=86400');
@@ -116,7 +116,10 @@ app.get('/qr.svg', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
+}
+app.get('/qr.svg', (req, res, next) => sendQr(req, res, next, '/app'));
+app.get('/qr/ios.svg', (req, res, next) => sendQr(req, res, next, '/app/ios'));
+app.get('/qr/android.svg', (req, res, next) => sendQr(req, res, next, '/app/android'));
 
 /* ───────── Static files ───────── */
 app.use(

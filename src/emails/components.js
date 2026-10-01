@@ -1,19 +1,19 @@
 // Email-safe building blocks (tables + inline styles; works in Gmail, Outlook, Apple Mail)
 const { escapeHtml: esc } = require('../i18n');
 
-const FONT = "Inter, 'Segoe UI', Helvetica, Arial, sans-serif";
+const FONT = "'Helvetica Now Display', Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const C = {
-  navy: '#141A33',
-  ink: '#141A33',
-  ink2: '#3D4659',
-  muted: '#6B7385',
+  navy: '#18182E',
+  ink: '#18182E',
+  ink2: '#4B586B',
+  muted: '#5B6579',
   line: '#E4E7EC',
   soft: '#F5F7F9',
   bg: '#EEF1F4',
-  green: '#00D46A',
-  greenText: '#007A3D',
-  green50: '#E7FBF1',
-  greenBorder: '#B6F0D1',
+  green: '#A608F9',        // brand accent (purple)
+  greenText: '#8A00D6',    // accent for small text
+  green50: '#F7EDFE',      // light accent background
+  greenBorder: '#E4C4FD',
 };
 
 /** Bulletproof button (VML for Outlook desktop, <a> elsewhere). */

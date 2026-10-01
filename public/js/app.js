@@ -54,6 +54,25 @@
     });
   }
 
+  /* ───────── Back to top ───────── */
+  const toTop = $('[data-to-top]');
+  if (toTop) {
+    let ticking = false;
+    const update = () => {
+      toTop.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.8);
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+    toTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      history.replaceState(null, '', location.pathname);
+    });
+  }
+
   /* ───────── Dialogs ───────── */
   const openDialog = (dlg) => {
     if (!dlg) return;
@@ -94,6 +113,11 @@
       const cb = $(`input[name="solutions"][value="${CSS.escape(mod)}"]`, contactModal);
       if (cb) cb.checked = true;
     }
+    const plan = opener.getAttribute('data-plan');
+    if (plan) {
+      const sel = $('select[name="plan"]', contactModal);
+      if (sel) sel.value = plan;
+    }
     openDialog(contactModal);
     if (isDesktop()) setTimeout(() => $('input[name="name"]', contactModal)?.focus(), 30);
   });
@@ -124,6 +148,7 @@
       industry: fd.get('industry') || '',
       companySize: fd.get('companySize') || '',
       location: (fd.get('location') || '').trim(),
+      plan: fd.get('plan') || '',
       solutions: fd.getAll('solutions'),
       contactPreference: fd.get('contactPreference') || 'email',
       message: (fd.get('message') || '').trim(),

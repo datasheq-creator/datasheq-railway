@@ -17,6 +17,7 @@ const INDUSTRIES = ids(content.industries);
 const SIZES = ids(content.companySizes);
 const PREFS = ids(content.contactPreferences);
 const MODULES = ids(content.modules);
+const PLANS = ids(content.planOptions);
 
 /**
  * Validates and normalises the contact payload.
@@ -34,6 +35,7 @@ function validateLead(body = {}) {
     industry: oneLine(body.industry, 40),
     companySize: oneLine(body.companySize, 40),
     location: oneLine(body.location, 100),
+    plan: PLANS.has(body.plan) ? body.plan : '',
     solutions: [].concat(body.solutions ?? []).map((s) => oneLine(s, 40)).filter((s) => MODULES.has(s)),
     contactPreference: PREFS.has(body.contactPreference) ? body.contactPreference : 'email',
     message: str(body.message, 3000).replace(/\r\n?/g, '\n').replace(/\n{3,}/g, '\n\n'),

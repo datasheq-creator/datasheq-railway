@@ -36,6 +36,7 @@ function renderInternalNotification({ lead, meta }) {
     ['Industria', labelOf(content.industries, lead.industry)],
     ['Tamaño', lead.companySize ? labelOf(content.companySizes, lead.companySize) : '—'],
     ['Ciudad / Región', lead.location || '—'],
+    ['Plan de interés', lead.plan ? labelOf(content.planOptions, lead.plan) : '—'],
     ['Soluciones de interés', solutions],
     ['Prefiere contacto por', labelOf(content.contactPreferences, lead.contactPreference)],
     ['Idioma', lead.lang.toUpperCase()],

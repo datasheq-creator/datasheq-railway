@@ -27,6 +27,15 @@ const P = {
   play: '<path d="M6.5 3.8v16.4L20 12z"/>',
   smartphone: '<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 5.5h3"/>',
   alert: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.3v.1"/>',
+  login: '<path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M4 12h11"/><path d="m11 8 4 4-4 4"/>',
+  up: '<path d="m6 15 6-6 6 6"/>',
+  robot:
+    '<rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1.2"/><circle cx="9" cy="13" r="1.3"/><circle cx="15" cy="13" r="1.3"/><path d="M2 12.5v2.5M22 12.5v2.5"/>',
+  chart: '<path d="M4 20h17"/><path d="M6 20v-5M10.5 20v-8M15 20v-6M19.5 20V9"/><path d="m5 11 5-4 4 3 6-6"/><path d="M17 4h3v3"/>',
+  bolt: '<path d="M13.5 2.5 5 13.5h6l-1.5 8 8.5-11h-6z"/>',
+  shield:
+    '<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-4.5"/>',
+  tick: '<path d="M4.5 12.5 9.5 17.5 19.5 6"/>',
 };
 
 function icon(name, { size = 24, cls = '', strokeWidth = 1.8 } = {}) {
@@ -34,6 +43,6 @@ function icon(name, { size = 24, cls = '', strokeWidth = 1.8 } = {}) {
 }
 
 // Filled green download arrow used in the header (as in the design)
-const downloadIcon = `<svg class="icon" width="30" height="30" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 2.5h6v7.5h4.2L12 17.2 4.8 10H9z" fill="currentColor"/><rect x="4" y="19.2" width="16" height="2.4" rx="1.2" fill="currentColor"/></svg>`;
+const downloadIcon = `<svg class="icon" width="34" height="34" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.3 2h5.4v7.6h4.4L12 16.9 4.9 9.6h4.4z" fill="currentColor"/><rect x="4" y="19.4" width="16" height="2.3" rx="1.15" fill="currentColor"/></svg>`;
 
 module.exports = { icon, downloadIcon };

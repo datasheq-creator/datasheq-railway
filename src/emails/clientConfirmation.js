@@ -32,6 +32,7 @@ function renderClientConfirmation({ lead, baseUrl }) {
     [t('f_name'), lead.name],
     [t('f_company'), lead.company],
     [t('f_industry'), labelOf(content.industries, lead.industry, lang)],
+    ...(lead.plan ? [[t('f_plan'), labelOf(content.planOptions, lead.plan, lang)]] : []),
     [t('f_solutions'), solutionsLabel],
     [t('f_preference'), labelOf(content.contactPreferences, lead.contactPreference, lang)],
     [t('f_message'), truncate(lead.message, 280)],
@@ -83,8 +84,8 @@ function renderClientConfirmation({ lead, baseUrl }) {
       <div style="width:34px;height:34px;border-radius:17px;background:${C.green};color:#FFFFFF;font-family:Arial,sans-serif;font-size:19px;font-weight:bold;line-height:34px;text-align:center;">&#10003;</div>
     </td>
     <td valign="top">
-      <p style="margin:0;font-family:${FONT};font-size:17px;line-height:1.35;font-weight:700;color:#0B3D24;">${esc(t('email_notice_title'))}</p>
-      <p style="margin:4px 0 0;font-family:${FONT};font-size:15px;line-height:1.55;color:#1F4D36;">${esc(t('email_notice_text', { name: firstName }))}</p>
+      <p style="margin:0;font-family:${FONT};font-size:17px;line-height:1.35;font-weight:700;color:${C.ink};">${esc(t('email_notice_title'))}</p>
+      <p style="margin:4px 0 0;font-family:${FONT};font-size:15px;line-height:1.55;color:${C.ink2};">${esc(t('email_notice_text', { name: firstName }))}</p>
     </td>
   </tr></table>
 </td></tr>
@@ -97,7 +98,7 @@ function renderClientConfirmation({ lead, baseUrl }) {
     <!-- Logo -->
     <tr><td align="center" style="padding:28px 36px 22px;border-bottom:1px solid ${C.line};">
       <a href="${esc(siteUrl)}" target="_blank" style="text-decoration:none;">
-        <img src="${esc(baseUrl)}/assets/logo-email.png" width="150" height="92" alt="DATASHEQ" style="display:block;width:150px;height:auto;margin:0 auto;font-family:${FONT};font-size:24px;font-weight:800;color:${C.navy};">
+        <img src="${esc(baseUrl)}/assets/logo-email.png" width="150" height="91" alt="DATASHEQ" style="display:block;width:150px;height:auto;margin:0 auto;font-family:${FONT};font-size:24px;font-weight:800;color:${C.navy};">
       </a>
     </td></tr>
 
@@ -123,7 +124,7 @@ function renderClientConfirmation({ lead, baseUrl }) {
         ${esc(t('hero_title_1'))}<span style="color:${C.green};">${esc(t('hero_title_hl'))}</span>${esc(t('hero_title_2'))}
       </h1>
       ${p(esc(t('hero_text')))}
-      ${p(`<strong style="color:${C.ink};">${esc(t('mission_title'))}:</strong> ${esc(t('mission_text'))}`, 'margin-top:12px;font-size:14px;')}
+      ${p(`<strong style="color:${C.ink};">${esc(t('mission_title'))}:</strong> ${esc(t('mission_text')[0])}`, 'margin-top:12px;font-size:14px;')}
       <div style="padding-top:20px;">${button(siteUrl, t('email_visit'), { width: 200 })}</div>
     </td></tr>
     ${divider}

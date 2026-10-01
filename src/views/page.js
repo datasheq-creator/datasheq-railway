@@ -2,14 +2,18 @@ const content = require('../content');
 const { pick, translator, escapeHtml: e } = require('../i18n');
 const { icon, downloadIcon } = require('./icons');
 
-const LOGO_W = 124;
-const LOGO_H = Math.round((LOGO_W * 202) / 330);
+// Official logo (public/assets/logo.svg) — viewBox 1149.8 × 694.25
+const LOGO_W = 140;
+const LOGO_H = Math.round((LOGO_W * 694.25) / 1149.8);
 
 function waLink(lang) {
   const t = translator(lang);
   const { whatsappNumber } = content.settings.contact;
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(t('contact_whatsapp_msg'))}`;
 }
+
+/** Escape, then turn **text** into <strong>text</strong>. */
+const rich = (s) => e(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
 /* ───────────────────────── Contact form ───────────────────────── */
 function renderForm({ lang, prefix, source }) {
@@ -36,9 +40,7 @@ function renderForm({ lang, prefix, source }) {
       </select>`;
 
   const solutions = content.modules
-    .map(
-      (m) => `<label class="chip"><input type="checkbox" name="solutions" value="${e(m.id)}"><span>${e(m.name)}</span></label>`
-    )
+    .map((m) => `<label class="chip"><input type="checkbox" name="solutions" value="${e(m.id)}"><span>${e(m.name)}</span></label>`)
     .join('');
 
   const prefs = content.contactPreferences
@@ -79,6 +81,9 @@ function renderForm({ lang, prefix, source }) {
 
       <fieldset>
         <legend>${e(t('form_section_need'))}</legend>
+        <div class="grid-2">
+          ${field({ name: 'plan', label: t('f_plan'), control: select('plan', content.planOptions, false) })}
+        </div>
         <div class="field" data-field="solutions">
           <span class="label" id="${id('solutions')}-lbl">${e(t('f_solutions'))} ${opt}</span>
           <div class="chips" role="group" aria-labelledby="${id('solutions')}-lbl">${solutions}</div>
@@ -107,7 +112,7 @@ function renderForm({ lang, prefix, source }) {
 
       <div class="form-alert" role="alert" hidden></div>
 
-      <button type="submit" class="btn btn-primary btn-block btn-lg" data-submit>
+      <button type="submit" class="btn btn-primary btn-block btn-submit" data-submit>
         <span class="btn-label">${e(t('f_submit'))}</span>
         <span class="spinner" aria-hidden="true"></span>
       </button>
@@ -130,10 +135,53 @@ function renderForm({ lang, prefix, source }) {
 /* ───────────────────────── Page ───────────────────────── */
 function renderPage({ lang, baseUrl, version }) {
   const t = translator(lang);
-  const { contact, app } = content.settings;
+  const { contact, loginUrl } = content.settings;
   const home = lang === 'es' ? '/' : '/en';
   const v = encodeURIComponent(version);
+  const A = (file) => `/assets/${file}?v=${v}`;
+  const arrow = icon('arrow', { size: 16, strokeWidth: 2.2 });
 
+  /* — 01 / 02 / 03 — */
+  const pains = pick(content.why.pains, lang).map((p) => `<li>${rich(p)}</li>`).join('');
+  const features = pick(content.why.features, lang)
+    .map((f) => `<li>${icon('tick', { size: 22, strokeWidth: 3, cls: 'tick' })}<span>${e(f)}</span></li>`)
+    .join('');
+  const benefits = content.why.benefits
+    .map(
+      (b) => `<li>
+        <span class="benefit-icon">${icon(b.icon, { size: 40, strokeWidth: 1.6 })}</span>
+        <div><strong>${e(pick(b.title, lang))}</strong><p>${e(pick(b.text, lang))}</p></div>
+      </li>`
+    )
+    .join('');
+
+  /* — Planes — */
+  const planCards = content.plans
+    .map((p) => {
+      const cls = ['plan-card', p.recommended ? 'is-recommended' : '', p.highlight ? 'is-highlight' : ''].join(' ').trim();
+      const price = p.soon
+        ? `<p class="plan-price plan-price--soon"><span class="dash" aria-hidden="true"></span>${e(t('plans_soon'))}</p>`
+        : `<p class="plan-price"><strong>${e(p.price)}</strong>${p.period ? `<span>${e(pick(p.period, lang))}</span>` : ''}</p>`;
+      const feats = p.features
+        .map((f) =>
+          f.off
+            ? `<li class="off"><span class="dash-sm" aria-hidden="true"></span><span>${e(pick(f, lang))}</span><span class="sr-only"> (${e(t('plans_not_included'))})</span></li>`
+            : `<li>${icon('tick', { size: 16, strokeWidth: 2.8, cls: 'tick' })}<span>${e(pick(f, lang))}</span></li>`
+        )
+        .join('');
+      const ctaLabel = { free: t('plans_cta_free'), buy: t('plans_cta_buy'), contact: t('plans_cta_contact') }[p.cta];
+      const ctaCls = p.cta === 'buy' ? 'btn-primary' : 'btn-outline';
+      return `<article class="${cls}">
+        ${p.recommended ? `<span class="plan-badge">${e(t('plans_recommended'))}</span>` : ''}
+        <h3 class="plan-name">${e(pick(p.name, lang))}</h3>
+        ${price}
+        <ul class="plan-features">${feats}</ul>
+        <button type="button" class="btn ${ctaCls} btn-block plan-cta" data-open-contact data-plan="${e(p.id)}">${e(ctaLabel)}</button>
+      </article>`;
+    })
+    .join('');
+
+  /* — Módulos — */
   const moduleCards = content.modules
     .map(
       (m) => `
@@ -146,13 +194,12 @@ function renderPage({ lang, baseUrl, version }) {
           </div>
         </div>
         <p class="module-desc">${e(pick(m.desc, lang))}</p>
-        <button type="button" class="link-arrow" data-open-contact data-module="${e(m.id)}">
-          ${e(t('module_cta'))} ${icon('arrow', { size: 16, strokeWidth: 2.2 })}
-        </button>
+        <button type="button" class="link-arrow" data-open-contact data-module="${e(m.id)}">${e(t('module_cta'))} ${arrow}</button>
       </li>`
     )
     .join('');
 
+  /* — Noticias — */
   const newsCards = content.news
     .map(
       (n, i) => `
@@ -162,9 +209,7 @@ function renderPage({ lang, baseUrl, version }) {
           <div class="news-meta"><span class="tag">${e(pick(n.tag, lang))}</span><span>${e(pick(n.date, lang))}</span></div>
           <h3>${e(pick(n.title, lang))}</h3>
           <p>${e(pick(n.excerpt, lang))}</p>
-          <button type="button" class="link-arrow" data-news="${e(n.id)}" aria-haspopup="dialog">
-            ${e(t('news_read_more'))} ${icon('arrow', { size: 16, strokeWidth: 2.2 })}
-          </button>
+          <button type="button" class="link-arrow" data-news="${e(n.id)}" aria-haspopup="dialog">${e(t('news_read_more'))} ${arrow}</button>
         </div>
       </article>
       <template id="news-${e(n.id)}">
@@ -179,13 +224,18 @@ function renderPage({ lang, baseUrl, version }) {
     )
     .join('');
 
-  const values = t('values')
-    .map((val) => `<li>${icon('check', { size: 16, strokeWidth: 2.4 })}${e(val)}</li>`)
+  /* — Equipo — */
+  const team = content.team
+    .map(
+      (m) => `<li class="member">
+        <img class="member-photo" src="${A(`team/${m.photo}.webp`)}" width="360" height="360" alt="${e(m.name)}" loading="lazy">
+        <strong>${e(m.name)}</strong>
+        <span>${e(pick(m.role, lang))}</span>
+      </li>`
+    )
     .join('');
 
-  const gpUrl = app.googlePlayUrl || '#contacto';
-  const asUrl = app.appStoreUrl || '#contacto';
-  const ext = (u) => (u.startsWith('http') ? ' target="_blank" rel="noopener"' : '');
+  const paras = (arr) => arr.map((p) => `<p class="body">${e(p)}</p>`).join('');
 
   const clientStrings = {
     err_required: t('err_required'),
@@ -209,8 +259,9 @@ function renderPage({ lang, baseUrl, version }) {
     '@type': 'Organization',
     name: 'DATASHEQ',
     url: baseUrl,
-    logo: `${baseUrl}/assets/logo.svg`,
+    logo: `${baseUrl}/assets/logo-email.png`,
     email: contact.email,
+    telephone: contact.whatsappDisplay,
     address: { '@type': 'PostalAddress', streetAddress: contact.address, addressCountry: 'CL' },
   };
 
@@ -230,10 +281,11 @@ function renderPage({ lang, baseUrl, version }) {
   <meta property="og:title" content="${e(t('meta_title'))}">
   <meta property="og:description" content="${e(t('meta_description'))}">
   <meta property="og:url" content="${e(baseUrl + home)}">
-  <meta property="og:image" content="${e(baseUrl)}/assets/hero.jpg">
+  <meta property="og:image" content="${e(baseUrl)}/assets/hero.webp">
   <meta property="og:locale" content="${lang === 'es' ? 'es_CL' : 'en_US'}">
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="${A('favicon.png')}" type="image/png">
   <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="${A('hero.webp')}" as="image" type="image/webp">
   <link rel="stylesheet" href="/css/styles.css?v=${v}">
   <script type="application/ld+json">${JSON.stringify(orgLd).replace(/</g, '\\u003c')}</script>
 </head>
@@ -243,23 +295,20 @@ function renderPage({ lang, baseUrl, version }) {
   <header class="site-header" data-header>
     <div class="container header-inner">
       <a class="brand" href="${home}#inicio" aria-label="DATASHEQ — ${e(t('nav_home'))}">
-        <img src="/assets/logo.svg" alt="DATASHEQ — ${e(t('tagline'))}" width="${LOGO_W}" height="${LOGO_H}">
+        <img src="${A('logo.svg')}" alt="DATASHEQ — ${e(t('tagline'))}" width="${LOGO_W}" height="${LOGO_H}">
       </a>
 
       <nav class="main-nav" id="main-nav" aria-label="${lang === 'es' ? 'Principal' : 'Main'}" data-nav>
         <ul class="nav-list">
           <li><a href="#inicio">${e(t('nav_home'))}</a></li>
-          <li class="has-sub">
-            <a href="#nosotros">${e(t('nav_about'))} ${icon('chevron', { size: 16, cls: 'chev', strokeWidth: 2.2 })}</a>
-            <ul class="sub">
-              <li><a href="#nosotros">${e(t('nav_about_who'))}</a></li>
-              <li><a href="#mision-vision">${e(t('nav_mission'))}</a></li>
-            </ul>
-          </li>
           <li><a href="#solucion">${e(t('nav_solution'))}</a></li>
           <li><a href="#noticias">${e(t('nav_news'))}</a></li>
+          <li><a href="#nosotros">${e(t('nav_about'))}</a></li>
         </ul>
-        <button type="button" class="btn btn-primary btn-block nav-cta" data-open-contact>${e(t('nav_contact'))}</button>
+        <div class="nav-mobile-actions">
+          <a class="btn btn-primary btn-block" href="${e(loginUrl)}" target="_blank" rel="noopener">${icon('login', { size: 20, strokeWidth: 2 })} ${e(t('nav_login'))}</a>
+          <button type="button" class="btn btn-outline btn-block" data-open-contact>${e(t('nav_contact'))}</button>
+        </div>
       </nav>
 
       <div class="header-actions">
@@ -267,10 +316,11 @@ function renderPage({ lang, baseUrl, version }) {
           <a href="/" hreflang="es" lang="es" data-lang-link ${lang === 'es' ? 'aria-current="true"' : ''}>ES</a>
           <a href="/en" hreflang="en" lang="en" data-lang-link ${lang === 'en' ? 'aria-current="true"' : ''}>EN</a>
         </div>
-        <button type="button" class="btn btn-outline btn-header" data-open-contact>${e(t('nav_contact'))}</button>
+        <a class="btn btn-primary btn-sm btn-login" href="${e(loginUrl)}" target="_blank" rel="noopener">${icon('login', { size: 20, strokeWidth: 2 })}<span>${e(t('nav_login'))}</span></a>
+        <button type="button" class="btn btn-outline btn-sm btn-header" data-open-contact>${e(t('nav_contact'))}</button>
         <a class="download-link" href="#app" aria-label="${e(t('nav_download'))}" title="${e(t('nav_download'))}">${downloadIcon}</a>
         <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="${e(t('nav_menu'))}" data-menu-toggle>
-          ${icon('menu', { size: 24, cls: 'i-menu' })}${icon('close', { size: 24, cls: 'i-close' })}
+          ${icon('menu', { size: 26, cls: 'i-menu' })}${icon('close', { size: 26, cls: 'i-close' })}
         </button>
       </div>
     </div>
@@ -281,51 +331,93 @@ function renderPage({ lang, baseUrl, version }) {
     <section class="hero" id="inicio">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <h1>${e(t('hero_title_1'))}<span class="hl">${e(t('hero_title_hl'))}</span>${e(t('hero_title_2'))}</h1>
+          <h1 class="display">${e(t('hero_title_1'))}<span class="hl">${e(t('hero_title_hl'))}</span>${e(t('hero_title_2'))}</h1>
           <p class="lead">${e(t('hero_text'))}</p>
-          <div class="hero-cta">
-            <a class="btn btn-primary btn-lg" href="#solucion">${e(t('hero_cta_primary'))}</a>
+          <div class="btn-row">
+            <a class="btn btn-primary btn-lg" href="#soluciones">${e(t('hero_cta_primary'))}</a>
             <button type="button" class="btn btn-outline btn-lg" data-open-contact>${e(t('hero_cta_secondary'))}</button>
           </div>
         </div>
         <div class="hero-media">
-          <img src="/assets/hero.jpg?v=${v}" alt="${e(t('hero_img_alt'))}" width="902" height="876" fetchpriority="high">
+          <img src="${A('hero.webp')}" alt="${e(t('hero_img_alt'))}" width="1600" height="1590" fetchpriority="high">
         </div>
       </div>
     </section>
 
-    <!-- NOSOTROS -->
-    <section class="section about" id="nosotros">
-      <div class="container about-grid">
-        <div class="about-copy">
-          <p class="eyebrow">${e(t('about_eyebrow'))}</p>
-          <h2>${e(t('about_title'))}</h2>
-          <p>${e(t('about_text'))}</p>
-          <ul class="values">${values}</ul>
+    <!-- C-LEGAL -->
+    <section class="clegal" id="solucion">
+      <div class="container clegal-grid">
+        <div class="clegal-copy">
+          <h2 class="display"><span class="d-block">${e(t('clegal_title_1'))}</span><span class="hl d-block">${e(t('clegal_title_hl'))}</span></h2>
+          <p class="lead">${e(t('clegal_text'))}</p>
+          <div class="btn-row">
+            <a class="btn btn-primary btn-lg" href="#nosotros">${e(t('clegal_cta_primary'))}</a>
+            <a class="btn btn-outline btn-lg" href="#planes">${e(t('clegal_cta_secondary'))}</a>
+          </div>
         </div>
-        <div class="mv" id="mision-vision">
-          <article class="mv-card">
-            <span class="mv-icon">${icon('target', { size: 24 })}</span>
-            <h3>${e(t('mission_title'))}</h3>
-            <p>${e(t('mission_text'))}</p>
-          </article>
-          <article class="mv-card mv-card--dark">
-            <span class="mv-icon">${icon('eye', { size: 24 })}</span>
-            <h3>${e(t('vision_title'))}</h3>
-            <p>${e(t('vision_text'))}</p>
-          </article>
+        <div class="clegal-media">
+          <img src="${A('clegal-phone.webp')}" alt="${e(t('clegal_img_alt'))}" width="1085" height="1198" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 / 02 / 03 -->
+    <section class="section why" id="c-legal">
+      <div class="container why-grid">
+        <article class="why-card why-card--1">
+          <span class="why-num">01</span>
+          <h3>${e(t('why_1_title'))}</h3>
+          <ul class="pain-list">${pains}</ul>
+          <img class="why-img why-img--laptop" src="${A('card-laptop.webp')}" alt="${e(t('why_1_img_alt'))}" width="706" height="405" loading="lazy">
+        </article>
+        <article class="why-card why-card--2">
+          <span class="why-num">02</span>
+          <h3>${e(t('why_2_title'))}</h3>
+          <ul class="tick-list">${features}</ul>
+          <img class="why-img why-img--phones" src="${A('card-phones.webp')}" alt="${e(t('why_2_img_alt'))}" width="564" height="482" loading="lazy">
+        </article>
+        <article class="why-card why-card--3">
+          <span class="why-num">03</span>
+          <h3>${e(t('why_3_title'))}</h3>
+          <ul class="benefit-list">${benefits}</ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- PLANES -->
+    <section class="section plans" id="planes">
+      <div class="container">
+        <header class="section-head center">
+          <p class="eyebrow">${e(t('plans_eyebrow'))}</p>
+          <h2 class="title">${e(t('plans_title'))}</h2>
+          <p class="body">${e(t('plans_text'))}</p>
+        </header>
+        <div class="plans-grid">${planCards}</div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta">
+      <div class="container cta-inner">
+        <h2 class="display"><span class="d-block">${e(t('cta_title_1'))}</span><span class="hl d-block">${e(t('cta_title_hl'))}</span></h2>
+        <p class="lead">${e(t('cta_text'))}</p>
+        <button type="button" class="btn btn-primary btn-lg" data-open-contact>${e(t('cta_button'))}</button>
+        <div class="cta-eco">
+          <span>${e(t('cta_ecosystem'))}</span>
+          <span class="cta-eco-arrow" aria-hidden="true">${icon('arrow', { size: 28, strokeWidth: 2.4 })}</span>
+          <a class="btn btn-outline" href="#soluciones">${e(t('cta_solutions'))}</a>
         </div>
       </div>
     </section>
 
     <!-- SOLUCIÓN INTEGRAL -->
-    <section class="section solution" id="solucion">
+    <section class="section solution" id="soluciones">
       <div class="container">
         <header class="section-head center">
           <p class="eyebrow">${e(t('solution_eyebrow'))}</p>
-          <h2>${e(t('solution_title'))}</h2>
-          <p>${e(t('solution_text_1'))}</p>
-          <p>${e(t('solution_text_2'))}</p>
+          <h2 class="title">${e(t('solution_title'))}</h2>
+          <p class="body">${e(t('solution_text_1'))}</p>
+          <p class="body">${e(t('solution_text_2'))}</p>
         </header>
         <ul class="modules-grid">
           ${moduleCards}
@@ -343,8 +435,8 @@ function renderPage({ lang, baseUrl, version }) {
       <div class="container">
         <header class="section-head">
           <p class="eyebrow">${e(t('news_eyebrow'))}</p>
-          <h2>${e(t('news_title'))}</h2>
-          <p>${e(t('news_text'))}</p>
+          <h2 class="title">${e(t('news_title'))}</h2>
+          <p class="body">${e(t('news_text'))}</p>
         </header>
         <div class="news-grid">${newsCards}</div>
       </div>
@@ -354,28 +446,45 @@ function renderPage({ lang, baseUrl, version }) {
     <section class="section app" id="app">
       <div class="container app-grid">
         <div class="app-copy">
-          <h2>${e(t('app_title_1'))}<span class="hl">${e(t('app_title_hl'))}</span></h2>
+          <h2 class="display">${e(t('app_title_1'))}<span class="hl">${e(t('app_title_hl'))}</span></h2>
           <p class="lead">${e(t('app_text'))}</p>
-          <div class="app-actions">
-            <div class="stores">
-              <a class="store-btn" href="${e(gpUrl)}"${ext(gpUrl)}>
-                ${icon('play', { size: 22, strokeWidth: 1.6 })}
-                <span><small>${e(t('app_gp_small'))}</small><strong>Google Play</strong></span>
-              </a>
-              <a class="store-btn" href="${e(asUrl)}"${ext(asUrl)}>
-                ${icon('smartphone', { size: 22, strokeWidth: 1.6 })}
-                <span><small>${e(t('app_as_small'))}</small><strong>App Store</strong></span>
-              </a>
+          <p class="app-access">${e(t('app_access'))}</p>
+          <div class="app-stores">
+            <div class="app-col">
+              <span class="app-label">${e(t('app_choose_store'))}</span>
+              <div class="store-icons">
+                <a href="/app/ios" target="_blank" rel="noopener" aria-label="App Store"><img src="${A('store-appstore.png')}" width="60" height="60" alt="App Store"></a>
+                <a href="/app/android" target="_blank" rel="noopener" aria-label="Google Play"><img src="${A('store-googleplay.png')}" width="60" height="60" alt="Google Play"></a>
+              </div>
             </div>
-            <figure class="qr">
-              <img src="/qr.svg" width="112" height="112" alt="${e(t('app_qr_label'))}">
-              <figcaption>${e(t('app_qr_label'))}</figcaption>
-            </figure>
+            <div class="app-col">
+              <span class="app-label">${e(t('app_scan'))}</span>
+              <div class="qr-row">
+                <figure><img src="/qr/ios.svg" width="132" height="132" alt="${e(t('app_qr_ios'))}"><figcaption>App Store</figcaption></figure>
+                <figure><img src="/qr/android.svg" width="132" height="132" alt="${e(t('app_qr_android'))}"><figcaption>Google Play</figcaption></figure>
+              </div>
+            </div>
           </div>
         </div>
         <div class="app-media">
-          <img src="/assets/phone.jpg?v=${v}" alt="${e(t('app_img_alt'))}" width="634" height="770" loading="lazy">
+          <img src="${A('app-phone.webp')}" alt="${e(t('app_img_alt'))}" width="670" height="760" loading="lazy">
         </div>
+      </div>
+    </section>
+
+    <!-- NOSOTROS -->
+    <section class="section about" id="nosotros">
+      <div class="container about-grid">
+        <div class="about-copy">
+          <p class="eyebrow">${e(t('about_eyebrow'))}</p>
+          <h2 class="title" id="mision">${e(t('mission_title'))}</h2>
+          ${paras(t('mission_text'))}
+          <h2 class="title" id="vision">${e(t('vision_title'))}</h2>
+          ${paras(t('vision_text'))}
+          <h2 class="title" id="equipo">${e(t('team_title'))}</h2>
+          <p class="body">${e(t('team_text'))}</p>
+        </div>
+        <ul class="team-grid" aria-label="${e(t('team_title'))}">${team}</ul>
       </div>
     </section>
 
@@ -384,22 +493,21 @@ function renderPage({ lang, baseUrl, version }) {
       <div class="container contact-grid">
         <div class="contact-copy">
           <p class="eyebrow">${e(t('contact_eyebrow'))}</p>
-          <h2>${e(t('contact_title'))}</h2>
-          <p>${e(t('contact_text'))}</p>
+          <h2 class="title">${e(t('contact_title'))}</h2>
+          <p class="body">${e(t('contact_text'))}</p>
           <ul class="contact-list">
             <li>
-              <span class="ci">${icon('phone')}</span>
+              <img class="ci" src="${A('contact-whatsapp.png')}" width="56" height="56" alt="" aria-hidden="true">
               <div><strong>${e(t('contact_whatsapp'))}</strong>
                 <a href="${e(waLink(lang))}" target="_blank" rel="noopener">${e(contact.whatsappDisplay)}</a></div>
             </li>
             <li>
-              <span class="ci">${icon('mail')}</span>
-              <div><strong>Email</strong><a href="mailto:${e(contact.email)}">${e(contact.email)}</a></div>
+              <img class="ci" src="${A('contact-mail.png')}" width="56" height="56" alt="" aria-hidden="true">
+              <div><a class="strong-link" href="mailto:${e(contact.email)}">${e(contact.email)}</a></div>
             </li>
             <li>
-              <span class="ci">${icon('pin')}</span>
-              <div><strong>${e(t('contact_address_label'))}</strong>
-                <a href="${e(contact.mapsUrl)}" target="_blank" rel="noopener">${e(contact.address)}</a></div>
+              <img class="ci" src="${A('contact-pin.png')}" width="56" height="56" alt="" aria-hidden="true">
+              <div><a class="strong-link" href="${e(contact.mapsUrl)}" target="_blank" rel="noopener">${e(contact.address)}</a></div>
             </li>
           </ul>
         </div>
@@ -413,18 +521,19 @@ function renderPage({ lang, baseUrl, version }) {
   <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <img src="/assets/logo.svg" alt="DATASHEQ" width="${LOGO_W}" height="${LOGO_H}" loading="lazy">
+        <img src="${A('logo.svg')}" alt="DATASHEQ" width="${LOGO_W}" height="${LOGO_H}" loading="lazy">
         <p>${e(t('footer_text'))}</p>
       </div>
       <div>
         <h4>${e(t('footer_links'))}</h4>
         <ul>
           <li><a href="#inicio">${e(t('nav_home'))}</a></li>
-          <li><a href="#nosotros">${e(t('nav_about'))}</a></li>
-          <li><a href="#mision-vision">${e(t('nav_mission'))}</a></li>
           <li><a href="#solucion">${e(t('nav_solution'))}</a></li>
+          <li><a href="#planes">${e(t('plans_eyebrow'))}</a></li>
           <li><a href="#noticias">${e(t('nav_news'))}</a></li>
+          <li><a href="#nosotros">${e(t('nav_about'))}</a></li>
           <li><a href="#app">${e(t('nav_download'))}</a></li>
+          <li><a href="${e(loginUrl)}" target="_blank" rel="noopener">${e(t('nav_login'))}</a></li>
         </ul>
       </div>
       <div>
@@ -433,7 +542,7 @@ function renderPage({ lang, baseUrl, version }) {
           <li><a href="${e(waLink(lang))}" target="_blank" rel="noopener">WhatsApp ${e(contact.whatsappDisplay)}</a></li>
           <li><a href="mailto:${e(contact.email)}">${e(contact.email)}</a></li>
           <li>${e(contact.address)}</li>
-          <li><button type="button" class="link-arrow" data-open-contact>${e(t('nav_contact'))} ${icon('arrow', { size: 16, strokeWidth: 2.2 })}</button></li>
+          <li><button type="button" class="link-arrow" data-open-contact>${e(t('nav_contact'))} ${arrow}</button></li>
         </ul>
       </div>
     </div>
@@ -441,6 +550,8 @@ function renderPage({ lang, baseUrl, version }) {
       <p class="footer-bottom">© ${new Date().getFullYear()} DATASHEQ · ${e(t('tagline'))}. ${e(t('footer_rights'))}</p>
     </div>
   </footer>
+
+  <a class="to-top" href="#inicio" data-to-top aria-label="${e(t('back_to_top'))}" title="${e(t('back_to_top'))}">${icon('up', { size: 30, strokeWidth: 2.4 })}</a>
 
   <!-- MODAL: CONTACTO -->
   <dialog class="modal" id="contact-modal" aria-labelledby="contact-modal-title">

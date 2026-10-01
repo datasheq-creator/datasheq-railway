@@ -76,11 +76,14 @@ No SendGrid template is needed — both emails are rendered by the app (`src/ema
 
 Look for `EDITAR` in that file.
 
-- **WhatsApp number** (`whatsappNumber`, `whatsappDisplay`) — placeholder `+56 9 0000 0000`.
-- **Public email** — set to `contacto@datasheq.com` (the PDF note was cut off at "contacto....").
-- **Google Play / App Store links** — empty for now; buttons go to the contact section and the QR goes to `/app` until you add them. Once set, the QR sends Android users to Google Play and iPhone users to the App Store.
-- **C-Previene** subtitle — the PDF says "Gestor Documental", which is close to C-Controla ("Control Documental"). Confirm.
-- **Draft copy** — Nosotros, Misión, Visión, module descriptions and the full text of the 3 news items were written for this build; review them.
-- **Logo** — `public/assets/logo.svg` is a vector rebuild of the logo in the PDF (the PDF only contains a low-resolution version). Replace it with the original vector logo if you have it; also regenerate `public/assets/logo-email.png` (300×184 px, white background) used in the emails.
-- **Mockup images** (`hero.jpg`, `phone.jpg`) are extracted from the PDF, which is compressed. Higher-resolution originals will look sharper.
-- **Store buttons** are plain text buttons; you may swap in the official Google Play / App Store badges once the app is published.
+- **App Store / Google Play links** (`settings.app`) — empty for now. The store icons and the two QR codes go to `/app/ios` and `/app/android`, which redirect to these links; until they are set they open the "Descarga nuestra app" section. Once set, the QR codes work without being regenerated.
+- **C-Previene** subtitle — "Gestor Documental" is close to C-Controla's "Control Documental". Confirm.
+- **Plans** — prices and features come from the design; edit `plans` to change them. "Contratar" / "Empezar gratis" / "Contáctanos" open the contact form with the plan preselected.
+- **News** — the three items' full text was drafted; review them.
+- **Inicio de Sesión** links to `settings.loginUrl` (`https://app.datasheq.com`).
+
+## Design reference
+
+- Palette: purple `#a608f9` (accent), dark `#18182e` (titles), `#14253b` (plan names / prices / active language), `#4b586b` (body), `#63d77f` (bullets), `#e5e9ec` (form panel).
+- Font: the designs use **Helvetica Now Display**, a licensed font. The CSS asks for it first and falls back to Inter (self-hosted). To use Helvetica Now on the site, add its `.woff2` files to `public/fonts/` and declare them with `@font-face` at the top of `public/css/styles.css`.
+- Images in `public/assets/` come from the "Images Datasheq" folder; the C-Legal phone, the app phone and the 01/02 mockups were cut from the "TAMAÑOS TEXTOS" design files.
