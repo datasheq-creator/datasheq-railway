@@ -45,12 +45,15 @@ Alternative without GitHub: install the Railway CLI, then `railway login`, `rail
 
 ### Environment variables
 
+The aliases are the names used by the C-Legal site, so both Railway services can share the same variables.
+
+
 | Variable | Required | Purpose |
 |---|---|---|
 | `SENDGRID_API_KEY` | yes | API key with **Mail Send** permission |
-| `SENDGRID_FROM_EMAIL` | yes | Sender address — must be verified in SendGrid |
-| `SENDGRID_FROM_NAME` | no | Sender name (default `DATASHEQ`) |
-| `CONTACT_TO_EMAIL` | yes | Address(es) that receive each request, comma-separated |
+| `SENDGRID_FROM_EMAIL` | yes | Sender address — must be verified in SendGrid. Alias: `SENDGRID_SENDER_EMAIL` |
+| `SENDGRID_FROM_NAME` | no | Sender name (default `DATASHEQ`). Alias: `SENDGRID_SENDER_NAME` |
+| `CONTACT_TO_EMAIL` | yes | Company inbox(es) that receive each request, comma-separated. Alias: `ADMIN_EMAIL` |
 | `CLIENT_REPLY_TO` | no | Reply-To on the client email (default: first `CONTACT_TO_EMAIL`) |
 | `PUBLIC_BASE_URL` | no | e.g. `https://datasheq.com`. Used for the logo/links in emails and the QR. Defaults to Railway's public domain |
 | `SENDGRID_SANDBOX` | no | `true` = SendGrid validates but doesn't deliver (testing) |

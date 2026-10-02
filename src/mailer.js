@@ -4,27 +4,37 @@ const sgMail = require('@sendgrid/mail');
 
 const isProd = process.env.NODE_ENV === 'production';
 
+/** First non-empty value among the given variable names (names are shared with the C-Legal site). */
+function env(...names) {
+  for (const n of names) {
+    const v = (process.env[n] || '').trim();
+    if (v) return v;
+  }
+  return '';
+}
+
 function config() {
-  const to = (process.env.CONTACT_TO_EMAIL || '')
-    .split(',')
+  // Company inbox(es) that receive every request — Railway variable CONTACT_TO_EMAIL (alias: ADMIN_EMAIL).
+  const to = env('CONTACT_TO_EMAIL', 'ADMIN_EMAIL')
+    .split(/[,;]/)
     .map((s) => s.trim())
     .filter(Boolean);
   return {
-    apiKey: (process.env.SENDGRID_API_KEY || '').trim(),
-    fromEmail: (process.env.SENDGRID_FROM_EMAIL || '').trim(),
-    fromName: (process.env.SENDGRID_FROM_NAME || 'DATASHEQ').trim(),
+    apiKey: env('SENDGRID_API_KEY'),
+    fromEmail: env('SENDGRID_FROM_EMAIL', 'SENDGRID_SENDER_EMAIL'),
+    fromName: env('SENDGRID_FROM_NAME', 'SENDGRID_SENDER_NAME') || 'DATASHEQ',
     to,
-    clientReplyTo: (process.env.CLIENT_REPLY_TO || to[0] || '').trim(),
+    clientReplyTo: env('CLIENT_REPLY_TO') || to[0] || '',
     sandbox: process.env.SENDGRID_SANDBOX === 'true',
-    dataResidency: (process.env.SENDGRID_DATA_RESIDENCY || '').trim().toLowerCase(), // "eu" for EU subusers
+    dataResidency: env('SENDGRID_DATA_RESIDENCY').toLowerCase(), // "eu" for EU subusers
   };
 }
 
 const cfg = config();
 const missing = [
   !cfg.apiKey && 'SENDGRID_API_KEY',
-  !cfg.fromEmail && 'SENDGRID_FROM_EMAIL',
-  !cfg.to.length && 'CONTACT_TO_EMAIL',
+  !cfg.fromEmail && 'SENDGRID_FROM_EMAIL (or SENDGRID_SENDER_EMAIL)',
+  !cfg.to.length && 'CONTACT_TO_EMAIL (or ADMIN_EMAIL)',
 ].filter(Boolean);
 const configured = missing.length === 0;
 
