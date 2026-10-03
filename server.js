@@ -13,6 +13,8 @@ const { rateLimit } = require('express-rate-limit');
 const QRCode = require('qrcode');
 
 const pkg = require('./package.json');
+const crypto = require('node:crypto');
+const fs = require('node:fs');
 const content = require('./src/content');
 const { translator } = require('./src/i18n');
 const { renderPage } = require('./src/views/page');
@@ -59,6 +61,28 @@ function baseUrlFrom(req) {
   return `${req.protocol}://${req.get('host')}`;
 }
 
+/**
+ * Cache-busting token for /css, /js and /assets (served with a 7-day cache).
+ * Derived from the files' content, so any CSS/JS/image change reaches returning
+ * visitors immediately, without having to bump package.json.
+ */
+function computeAssetVersion() {
+  const hash = crypto.createHash('sha1');
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((x, y) => x.name.localeCompare(y.name))) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else hash.update(entry.name).update(fs.readFileSync(full));
+    }
+  };
+  for (const sub of ['css', 'js', 'assets']) {
+    const dir = path.join(__dirname, 'public', sub);
+    if (fs.existsSync(dir)) walk(dir);
+  }
+  return hash.digest('hex').slice(0, 10);
+}
+const assetVersion = computeAssetVersion();
+
 const pageCache = new Map();
 function sendPage(lang) {
   return (req, res) => {
@@ -66,7 +90,7 @@ function sendPage(lang) {
     const key = `${lang}|${baseUrl}`;
     if (!pageCache.has(key) || !isProd) {
       if (pageCache.size > 20) pageCache.clear(); // bounded (Host header varies only if no PUBLIC_BASE_URL)
-      pageCache.set(key, renderPage({ lang, baseUrl, version: pkg.version }));
+      pageCache.set(key, renderPage({ lang, baseUrl, version: isProd ? assetVersion : computeAssetVersion() }));
     }
     res.set('Cache-Control', 'no-cache');
     res.type('html').send(pageCache.get(key));
