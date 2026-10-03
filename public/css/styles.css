@@ -1,6 +1,7 @@
 /* ─────────────────────────────────────────────
    DATASHEQ — estilos del sitio
-   Paleta y tipografía según las guías "TAMAÑOS TEXTOS".
+   Paleta: PALETA-COLORES (#10102a · #1b33c8 · #c200ff · #04dd75), color primario = morado #c200ff
+   (igual que el sitio de C-Legal). Tipografía según las guías "TAMAÑOS TEXTOS".
    Tamaños de diseño (px del artboard) → CSS: tamaño × 100vw / 792, con mínimos legibles.
    ───────────────────────────────────────────── */
 
@@ -24,20 +25,19 @@
 }
 
 :root {
-  /* Palette */
-  --purple: #a608f9;
-  --purple-600: #8a00d6;
-  --purple-50: #f7edfe;
-  --purple-100: #eed8fe;
-  --indigo: #2836c2;
-  --ink: #18182e;        /* titles */
+  /* Palette — primary: purple */
+  --purple: #c200ff;     /* primary */
+  --purple-600: #a702df; /* hover / small text (85% purple + 15% ink) */
+  --purple-50: #fae8ff;
+  --purple-100: #f4d1ff;
+  --indigo: #1b33c8;
+  --ink: #10102a;        /* titles */
   --navy: #14253b;       /* plan names, prices, ES/EN active */
   --text: #4b586b;       /* body */
   --muted: #5b6579;
   --soft-text: #8f8c8c;  /* design #aca9a9, darkened for legibility */
   --disabled: #a3adb8;
-  --green: #63d77f;
-  --teal: #4dad9f;
+  --green: #04dd75;
   --line: #e4e7ec;
   --soft: #f6f7f9;
   --panel: #e5e9ec;
@@ -60,9 +60,9 @@
   --fs-price: clamp(26px, 1.9vw, 32px);     /* 15 Extrabold */
 
   --radius: 8px;
-  --shadow-sm: 0 1px 2px rgba(24, 24, 46, 0.06), 0 2px 8px rgba(24, 24, 46, 0.05);
-  --shadow: 0 10px 30px rgba(24, 24, 46, 0.08), 0 2px 6px rgba(24, 24, 46, 0.04);
-  --shadow-lg: 0 24px 60px rgba(24, 24, 46, 0.18);
+  --shadow-sm: 0 1px 2px rgba(16, 16, 42, 0.06), 0 2px 8px rgba(16, 16, 42, 0.05);
+  --shadow: 0 10px 30px rgba(16, 16, 42, 0.08), 0 2px 6px rgba(16, 16, 42, 0.04);
+  --shadow-lg: 0 24px 60px rgba(16, 16, 42, 0.18);
 
   --header-h: 96px;
   --container: 1200px;
@@ -109,7 +109,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
 
 .skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; }
 .skip-link:focus { top: 12px; }
-:focus-visible { outline: 3px solid rgba(166, 8, 249, 0.45); outline-offset: 2px; border-radius: 6px; }
+:focus-visible { outline: 3px solid rgba(194, 0, 255, 0.45); outline-offset: 2px; border-radius: 6px; }
 
 /* ───────── Typography ───────── */
 .display { font-size: var(--fs-display); font-weight: 800; line-height: 1.04; letter-spacing: -0.025em; color: var(--ink); }
@@ -130,7 +130,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
   transition: background-color .15s, border-color .15s, color .15s, box-shadow .15s, transform .15s;
 }
 .btn:active { transform: translateY(1px); }
-.btn-primary { background: var(--purple); color: #fff; box-shadow: 0 8px 20px rgba(166, 8, 249, 0.25); }
+.btn-primary { background: var(--purple); color: #fff; box-shadow: 0 8px 20px rgba(194, 0, 255, 0.25); }
 .btn-primary:hover { background: var(--purple-600); }
 .btn-outline { background: #fff; color: var(--text); border-color: var(--ink); }
 .btn-outline:hover { color: var(--purple); border-color: var(--purple); }
@@ -156,7 +156,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
   background: rgba(255, 255, 255, 0.97);
   backdrop-filter: saturate(1.4) blur(8px);
   -webkit-backdrop-filter: saturate(1.4) blur(8px);
-  box-shadow: 0 10px 30px rgba(24, 24, 46, 0.06);
+  box-shadow: 0 10px 30px rgba(16, 16, 42, 0.06);
 }
 .header-inner { display: flex; align-items: center; gap: 24px; height: var(--header-h); }
 .brand { display: flex; align-items: center; flex: none; }
@@ -238,7 +238,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
   background: #fff; border-radius: 14px; border: 1.5px solid #eef0f3;
   box-shadow: var(--shadow); padding: 34px 26px 26px;
 }
-.plan-card.is-recommended { box-shadow: 0 22px 50px rgba(166, 8, 249, 0.14), 0 2px 6px rgba(24, 24, 46, 0.04); }
+.plan-card.is-recommended { box-shadow: 0 22px 50px rgba(194, 0, 255, 0.14), 0 2px 6px rgba(16, 16, 42, 0.04); }
 .plan-card.is-highlight { border-color: var(--purple); }
 .plan-badge { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background: var(--purple); color: #fff; font-size: 14px; font-weight: 700; padding: 8px 24px; border-radius: 999px; white-space: nowrap; }
 .plan-name { font-size: var(--fs-name); font-weight: 800; color: var(--navy); }
@@ -249,7 +249,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
 .plan-price .dash { width: 30px; height: 3px; background: var(--navy); border-radius: 2px; }
 .plan-features { margin: 20px 0 28px; flex: 1; }
 .plan-features li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 15px; font-weight: 600; color: #17243c; }
-.plan-features .tick { color: var(--teal); }
+.plan-features .tick { color: var(--purple); }
 .plan-features li.off { color: var(--disabled); }
 .plan-features .dash-sm { width: 14px; height: 2px; background: var(--disabled); flex: none; }
 .plan-cta { min-height: 58px; font-size: var(--fs-nav); }
@@ -271,14 +271,14 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
   background: #fff; border-radius: 14px; padding: 24px 24px 18px;
   box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s;
 }
-.module-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(24, 24, 46, 0.12); }
+.module-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(16, 16, 42, 0.12); }
 .module-top { display: flex; align-items: center; gap: 16px; }
 .module-icon { display: grid; place-items: center; flex: none; width: 46px; height: 46px; border-radius: 10px; background: linear-gradient(135deg, var(--indigo), var(--purple)); color: #fff; }
 .module-card h3 { font-size: var(--fs-card-title); font-weight: 800; letter-spacing: -0.01em; }
 .module-sub { font-size: 14px; color: var(--text); font-weight: 500; margin-top: 2px; }
 .module-desc { font-size: var(--fs-small); line-height: 1.5; color: var(--muted); flex: 1; }
 .module-card .link-arrow { align-self: flex-start; }
-.module-card--cta { grid-column: span 2; justify-content: center; align-items: flex-start; background: linear-gradient(120deg, var(--ink) 0%, #23204f 60%, #4a1287 100%); color: #d6d3ea; padding: 30px 32px; }
+.module-card--cta { grid-column: span 2; justify-content: center; align-items: flex-start; background: linear-gradient(120deg, var(--ink) 0%, #12174a 60%, #570a7f 100%); color: #d6d3ea; padding: 30px 32px; }
 .module-card--cta h3 { color: #fff; font-size: 22px; }
 .module-card--cta p { max-width: 520px; }
 .module-card--cta:hover { transform: none; }
@@ -288,8 +288,8 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
 .news-card { display: flex; flex-direction: column; overflow: hidden; background: #fff; border-radius: 14px; border: 1px solid var(--line); box-shadow: var(--shadow-sm); transition: box-shadow .2s, transform .2s; }
 .news-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
 .news-cover { height: 150px; display: grid; place-items: center; color: #fff; font-size: 32px; font-weight: 900; letter-spacing: -0.01em; }
-.news-cover--1 { background: linear-gradient(135deg, #5a13d8 0%, var(--purple) 100%); }
-.news-cover--2 { background: linear-gradient(135deg, var(--purple) 0%, #c55bfb 100%); }
+.news-cover--1 { background: linear-gradient(135deg, #6e1ae4 0%, var(--purple) 100%); }
+.news-cover--2 { background: linear-gradient(135deg, var(--purple) 0%, #d759ff 100%); }
 .news-cover--3 { background: linear-gradient(135deg, var(--indigo) 0%, var(--purple) 100%); }
 .news-body { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 20px; flex: 1; }
 .news-meta { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); font-weight: 500; }
@@ -343,7 +343,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
 .contact-form legend { padding: 0; margin-bottom: 12px; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
 .field { margin-bottom: 14px; min-width: 0; }
-.field label, .field .label { display: block; font-size: 15px; font-weight: 800; color: #17172e; margin-bottom: 7px; }
+.field label, .field .label { display: block; font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 7px; }
 .req { color: var(--purple); margin-left: 2px; }
 .opt { font-weight: 400; color: var(--muted); font-size: 13px; }
 .contact-form input[type='text'], .contact-form input[type='email'], .contact-form input[type='tel'],
@@ -351,7 +351,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
   width: 100%; min-height: 48px; padding: 11px 14px;
   font: inherit; font-size: 15px; font-weight: 500; color: var(--ink);
   background: #fff; border: 1.5px solid transparent; border-radius: 8px;
-  box-shadow: 0 0 0 1px rgba(24, 24, 46, 0.05);
+  box-shadow: 0 0 0 1px rgba(16, 16, 42, 0.05);
   transition: border-color .15s, box-shadow .15s;
 }
 .contact-form select {
@@ -361,7 +361,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
 }
 .contact-form textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
 .contact-form ::placeholder { color: #9aa1ad; }
-.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 4px rgba(166, 8, 249, 0.14); }
+.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 4px rgba(194, 0, 255, 0.14); }
 .field.has-error input, .field.has-error select, .field.has-error textarea { border-color: var(--danger); }
 .field-error { display: none; margin-top: 6px; font-size: 13px; color: var(--danger); font-weight: 500; }
 .field.has-error .field-error { display: block; }
@@ -371,12 +371,12 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
 .chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
 .chip span {
   display: inline-flex; align-items: center; min-height: 38px; padding: 6px 15px; border-radius: 999px;
-  background: #fff; border: 1.5px solid transparent; box-shadow: 0 0 0 1px rgba(24, 24, 46, 0.08);
+  background: #fff; border: 1.5px solid transparent; box-shadow: 0 0 0 1px rgba(16, 16, 42, 0.08);
   font-size: 14px; font-weight: 600; color: var(--text); transition: all .15s; user-select: none;
 }
-.chip:hover span { box-shadow: 0 0 0 1px rgba(24, 24, 46, 0.25); }
-.chip input:checked + span { background: var(--purple-50); border-color: var(--purple); color: #6d04a6; }
-.chip input:focus-visible + span { outline: 3px solid rgba(166, 8, 249, 0.45); outline-offset: 2px; }
+.chip:hover span { box-shadow: 0 0 0 1px rgba(16, 16, 42, 0.25); }
+.chip input:checked + span { background: var(--purple-50); border-color: var(--purple); color: #7b06aa; }
+.chip input:focus-visible + span { outline: 3px solid rgba(194, 0, 255, 0.45); outline-offset: 2px; }
 
 .field--check { margin: 6px 0 16px; }
 .check { display: flex !important; gap: 10px; align-items: flex-start; font-weight: 500 !important; font-size: 14px !important; color: var(--text) !important; cursor: pointer; }
@@ -392,14 +392,14 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
 
 .form-success { text-align: center; padding: 28px 8px 8px; }
 .form-success:focus { outline: none; }
-.success-icon { display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--purple); color: #fff; margin-bottom: 18px; box-shadow: 0 10px 24px rgba(166, 8, 249, 0.3); }
+.success-icon { display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--purple); color: #fff; margin-bottom: 18px; box-shadow: 0 10px 24px rgba(194, 0, 255, 0.3); }
 .form-success h3 { font-size: 24px; font-weight: 900; margin-bottom: 10px; }
 .form-success p { max-width: 420px; margin: 0 auto 6px; }
 .success-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
 
 /* ───────── Modal ───────── */
 .modal { width: min(780px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0; border: 0; border-radius: 16px; background: transparent; overflow: visible; color: var(--text); }
-.modal::backdrop { background: rgba(14, 14, 32, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.modal::backdrop { background: rgba(16, 16, 42, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
 .modal[open] { animation: pop .18s ease-out; }
 .modal[open]::backdrop { animation: fade .18s ease-out; }
 @keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
@@ -440,7 +440,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
   position: fixed; right: clamp(16px, 2.5vw, 40px); bottom: clamp(16px, 2.5vw, 40px); z-index: 40;
   display: grid; place-items: center; width: clamp(54px, 4.4vw, 72px); height: clamp(54px, 4.4vw, 72px);
   border-radius: 50%; border: 3px solid var(--purple); color: var(--purple); background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 8px 24px rgba(166, 8, 249, 0.15);
+  box-shadow: 0 8px 24px rgba(194, 0, 255, 0.15);
   opacity: 0; visibility: hidden; transform: translateY(10px);
   transition: opacity .2s, transform .2s, visibility .2s, background-color .15s, color .15s;
 }
@@ -453,7 +453,7 @@ section[id], [id='mision'], [id='vision'], [id='equipo'] { scroll-margin-top: ca
   .menu-toggle { display: inline-flex; }
   .main-nav {
     position: fixed; inset: var(--header-h) 0 auto 0; margin: 0;
-    background: #fff; box-shadow: 0 18px 30px rgba(24, 24, 46, 0.12);
+    background: #fff; box-shadow: 0 18px 30px rgba(16, 16, 42, 0.12);
     padding: 12px var(--gutter) 22px; max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
     opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity .18s, transform .18s, visibility .18s;
   }

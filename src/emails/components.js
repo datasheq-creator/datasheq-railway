@@ -3,17 +3,17 @@ const { escapeHtml: esc } = require('../i18n');
 
 const FONT = "'Helvetica Now Display', Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const C = {
-  navy: '#18182E',
-  ink: '#18182E',
+  navy: '#10102A',
+  ink: '#10102A',
   ink2: '#4B586B',
   muted: '#5B6579',
   line: '#E4E7EC',
   soft: '#F5F7F9',
   bg: '#EEF1F4',
-  green: '#A608F9',        // brand accent (purple)
-  greenText: '#8A00D6',    // accent for small text
-  green50: '#F7EDFE',      // light accent background
-  greenBorder: '#E4C4FD',
+  green: '#C200FF',        // primary brand colour (purple) — PALETA-COLORES
+  greenText: '#A702DF',    // purple for small text (AA on white)
+  green50: '#FAE8FF',      // light purple background
+  greenBorder: '#EEB8FF',
 };
 
 /** Bulletproof button (VML for Outlook desktop, <a> elsewhere). */
