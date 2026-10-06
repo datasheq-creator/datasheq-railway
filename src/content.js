@@ -23,7 +23,7 @@ const settings = {
   },
 
   app: {
-    // EDITAR: enlaces reales de las tiendas. Los íconos y los códigos QR apuntan a /app/ios y /app/android,
+    // EDITAR: enlaces reales de las tiendas. Los íconos apuntan a /app/ios y /app/android,
     // que redirigen aquí; mientras estén vacíos, llevan a la sección "Descarga nuestra app".
     appStoreUrl: '',
     googlePlayUrl: '',
@@ -78,7 +78,7 @@ const plans = [
   {
     id: 'libre',
     name: t('Libre', 'Free'),
-    price: '$0',
+    price: 'US$0',
     period: t('/ 30 días', '/ 30 days'),
     cta: 'free',
     features: [
@@ -93,12 +93,12 @@ const plans = [
   {
     id: 'basico',
     name: t('Básico', 'Basic'),
-    price: '$29.990 - $39.990',
+    price: 'US$39',
     recommended: true,
     cta: 'buy',
     features: [
       t('App móvil', 'Mobile app'),
-      t('2 usuarios', '2 users'),
+      t('1 usuario', '1 user'),
       t('1 empresa / 1 instalación', '1 company / 1 site'),
       t('Verificaciones ilimitadas', 'Unlimited verifications'),
       t('Informes ilimitados', 'Unlimited reports'),
@@ -431,9 +431,7 @@ const ui = {
   ),
   app_access: t('Para acceder a nuestra app:', 'To get our app:'),
   app_choose_store: t('Elige tu store', 'Choose your store'),
-  app_scan: t('Escanea', 'Scan'),
-  app_qr_ios: t('Código QR para App Store', 'QR code for the App Store'),
-  app_qr_android: t('Código QR para Google Play', 'QR code for Google Play'),
+  app_cta: t('Solicitar acceso', 'Request access'),
   app_img_alt: t('App DATASHEQ en un teléfono móvil', 'DATASHEQ app on a mobile phone'),
 
   // Nosotros

@@ -10,7 +10,6 @@ const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
 const { rateLimit } = require('express-rate-limit');
-const QRCode = require('qrcode');
 
 const pkg = require('./package.json');
 const crypto = require('node:crypto');
@@ -108,7 +107,7 @@ app.get('/healthz', (req, res) => {
   res.json({ status: 'ok', version: pkg.version, mail: { configured: mail.configured, sandbox: mail.sandbox } });
 });
 
-/** Store redirects (used by the store icons and the QR codes). Fall back to the app section. */
+/** Store redirects (used by the store icons). Fall back to the app section. */
 function storeRedirect(req, res, which) {
   const { googlePlayUrl, appStoreUrl } = content.settings.app;
   const ua = req.get('user-agent') || '';
@@ -123,27 +122,6 @@ function storeRedirect(req, res, which) {
 app.get('/app', (req, res) => storeRedirect(req, res, 'auto'));
 app.get('/app/ios', (req, res) => storeRedirect(req, res, 'ios'));
 app.get('/app/android', (req, res) => storeRedirect(req, res, 'android'));
-
-const qrCache = new Map();
-async function sendQr(req, res, next, path) {
-  try {
-    const target = `${baseUrlFrom(req)}${path}`;
-    if (!qrCache.has(target)) {
-      if (qrCache.size > 30) qrCache.clear();
-      qrCache.set(
-        target,
-        await QRCode.toString(target, { type: 'svg', margin: 0, errorCorrectionLevel: 'M', color: { dark: '#000000', light: '#FFFFFF' } })
-      );
-    }
-    res.set('Cache-Control', 'public, max-age=86400');
-    res.type('image/svg+xml').send(qrCache.get(target));
-  } catch (err) {
-    next(err);
-  }
-}
-app.get('/qr.svg', (req, res, next) => sendQr(req, res, next, '/app'));
-app.get('/qr/ios.svg', (req, res, next) => sendQr(req, res, next, '/app/ios'));
-app.get('/qr/android.svg', (req, res, next) => sendQr(req, res, next, '/app/android'));
 
 /* ───────── Static files ───────── */
 app.use(

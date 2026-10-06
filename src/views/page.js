@@ -450,20 +450,12 @@ function renderPage({ lang, baseUrl, version }) {
           <p class="lead">${e(t('app_text'))}</p>
           <p class="app-access">${e(t('app_access'))}</p>
           <div class="app-stores">
-            <div class="app-col">
-              <span class="app-label">${e(t('app_choose_store'))}</span>
-              <div class="store-icons">
-                <a href="/app/ios" target="_blank" rel="noopener" aria-label="App Store"><img src="${A('store-appstore.png')}" width="60" height="60" alt="App Store"></a>
-                <a href="/app/android" target="_blank" rel="noopener" aria-label="Google Play"><img src="${A('store-googleplay.png')}" width="60" height="60" alt="Google Play"></a>
-              </div>
+            <span class="app-label">${e(t('app_choose_store'))}</span>
+            <div class="store-icons">
+              <a href="/app/ios" target="_blank" rel="noopener" aria-label="App Store"><img src="${A('store-appstore.png')}" width="60" height="60" alt="App Store"></a>
+              <a href="/app/android" target="_blank" rel="noopener" aria-label="Google Play"><img src="${A('store-googleplay.png')}" width="60" height="60" alt="Google Play"></a>
             </div>
-            <div class="app-col">
-              <span class="app-label">${e(t('app_scan'))}</span>
-              <div class="qr-row">
-                <figure><img src="/qr/ios.svg" width="132" height="132" alt="${e(t('app_qr_ios'))}"><figcaption>App Store</figcaption></figure>
-                <figure><img src="/qr/android.svg" width="132" height="132" alt="${e(t('app_qr_android'))}"><figcaption>Google Play</figcaption></figure>
-              </div>
-            </div>
+            <button type="button" class="btn btn-primary btn-lg app-cta" data-open-contact>${e(t('app_cta'))}</button>
           </div>
         </div>
         <div class="app-media">

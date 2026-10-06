@@ -12,7 +12,7 @@ Stack: Node.js 22 + Express 5, server-rendered HTML, no build step, no external 
 ## Project structure
 
 ```
-server.js                    Express app: pages, /api/contact, /qr.svg, /app, /healthz
+server.js                    Express app: pages, /api/contact, /app, /healthz
 src/content.js               ← ALL site text (ES/EN), contact data, modules, news. Edit here.
 src/views/page.js            Page template (header, sections, modals, form)
 src/validate.js              Server-side validation + anti-spam (honeypot, timing)
@@ -55,7 +55,7 @@ The C-Legal site (clegal-railway) uses exactly the same variables, so both Railw
 | `SENDGRID_FROM_NAME` | no | Sender name (default `DATASHEQ`) |
 | `CONTACT_TO_EMAIL` | yes | Company inbox(es) that receive each request, comma-separated |
 | `CLIENT_REPLY_TO` | no | Reply-To on the client email (default: first `CONTACT_TO_EMAIL`) |
-| `PUBLIC_BASE_URL` | no | e.g. `https://datasheq.com`. Used for the logo/links in emails and the QR. Defaults to Railway's public domain |
+| `PUBLIC_BASE_URL` | no | e.g. `https://datasheq.com`. Used for the logo/links in emails. Defaults to Railway's public domain |
 | `SENDGRID_SANDBOX` | no | `true` = SendGrid validates but doesn't deliver (testing) |
 | `SENDGRID_DATA_RESIDENCY` | no | `eu` only for EU-residency SendGrid subusers |
 | `CONTACT_RATE_LIMIT` | no | Successful submissions per IP per 10 min (default 5) |
@@ -79,7 +79,7 @@ No SendGrid template is needed — both emails are rendered by the app (`src/ema
 
 Look for `EDITAR` in that file.
 
-- **App Store / Google Play links** (`settings.app`) — empty for now. The store icons and the two QR codes go to `/app/ios` and `/app/android`, which redirect to these links; until they are set they open the "Descarga nuestra app" section. Once set, the QR codes work without being regenerated.
+- **App Store / Google Play links** (`settings.app`) — empty for now. The store icons go to `/app/ios` and `/app/android`, which redirect to these links; until they are set they open the "Descarga nuestra app" section. The "Solicitar acceso" button below them opens the contact form.
 - **C-Previene** subtitle — "Gestor Documental" is close to C-Controla's "Control Documental". Confirm.
 - **Plans** — prices and features come from the design; edit `plans` to change them. "Contratar" / "Empezar gratis" / "Contáctanos" open the contact form with the plan preselected.
 - **News** — the three items' full text was drafted; review them.
