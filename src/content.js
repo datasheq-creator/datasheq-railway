@@ -34,7 +34,6 @@ const t = (es, en) => ({ es, en });
 
 /* ───────────────────────── Equipo (sección Nosotros) ───────────────────────── */
 const team = [
-  { name: 'Tamara Bravo', photo: 'tamara-bravo', role: t('Founder & CEO', 'Founder & CEO') },
   { name: 'Constanza Lores', photo: 'constanza-lores', role: t('Control de Gestión', 'Management Control') },
   { name: 'Victor Achurra', photo: 'victor-achurra', role: t('Comercial & Tech', 'Sales & Tech') },
   { name: 'Paulina Espinoza', photo: 'paulina-espinoza', role: t('Finanzas & RRHH', 'Finance & HR') },
@@ -463,8 +462,8 @@ const ui = {
   ),
   team_title: t('Equipo', 'Team'),
   team_text: t(
-    'Datasheq es un equipo multidisciplinario de 5 personas que integra conocimiento técnico, de negocios y tecnología para desarrollar herramientas digitales simples, eficientes e intuitivas que faciliten la gestión HSEQ (seguridad, salud ocupacional, medio ambiente y cumplimiento), el control y la toma de decisiones.',
-    'Datasheq is a multidisciplinary team of 5 people combining technical, business and technology know-how to build simple, efficient and intuitive digital tools that make HSEQ management (safety, occupational health, environment and compliance), control and decision-making easier.'
+    'Datasheq es un equipo multidisciplinario de 4 personas que integra conocimiento técnico, de negocios y tecnología para desarrollar herramientas digitales simples, eficientes e intuitivas que faciliten la gestión HSEQ (seguridad, salud ocupacional, medio ambiente y cumplimiento), el control y la toma de decisiones.',
+    'Datasheq is a multidisciplinary team of 4 people combining technical, business and technology know-how to build simple, efficient and intuitive digital tools that make HSEQ management (safety, occupational health, environment and compliance), control and decision-making easier.'
   ),
 
   // Contacto
